@@ -1,0 +1,23 @@
+[
+  {
+    "subject": "A1",
+    "content": [
+      "截圖兩份：完成12項EIP-1056定義之智能合約程式介面。",
+      "使用公開資料集，從中隨機挑選十份資料，進行 secp256r1簽章驗證測試，並提供各項測試通過與否之測試報告一式。"
+    ],
+    "additional": "簡單描述EIP-1056定義之智能合約程式介面。",
+    "amount": 2
+  },
+  {
+    "subject": "A2",
+    "content": ["確認API架構。", "提供API文件。"],
+    "additional": "使用Swagger或其他API文件產生工具，產生API文件。用node.js根據Microservice模式實作API。",
+    "amount": 1
+  },
+  {
+    "subject": "B1",
+    "content": ["資安滲透測試。", "資安壓力測試。"],
+    "additional": "",
+    "amount": 2
+  }
+]

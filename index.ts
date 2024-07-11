@@ -2,6 +2,15 @@ import "dotenv/config";
 import OpenAI from "openai";
 import fs from "fs";
 
+type Param = {
+  subject: string;
+  content: string[];
+  amount: number;
+  additional: string;
+};
+
+type Params = Param[];
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 if (!OPENAI_API_KEY) {
@@ -11,6 +20,13 @@ if (!OPENAI_API_KEY) {
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
 });
+
+const readParams = (path: string): Params => {
+  const fileContent = fs.readFileSync(path, "utf-8");
+  const params: Params = JSON.parse(fileContent);
+  console.log(params);
+  return params;
+};
 
 const chat = async (content: string, isLastCell: boolean = false) => {
   const response = await openai.chat.completions.create({
@@ -43,16 +59,28 @@ const write = (
   fs.appendFileSync(path, parsedContent);
 };
 
-const prompt = fs.readFileSync("prompt.txt", "utf-8");
-
-const call = async () => {
-  for (let i = 1; i <= 10; i++) {
-    if (i % 2 === 0) {
-      await chat(prompt, true);
-    } else {
-      await chat(prompt);
+const call = async (prompt: string, params: Params) => {
+  let counter = 1;
+  for (let i = 0; i < params.length; i++) {
+    const amount = params[i].amount;
+    for (let j = 0; j < amount; j++) {
+      const isLastCell = counter % 2 === 0;
+      const parsedPrompt = parsePrompt(prompt, params[i]);
+      await chat(parsedPrompt, isLastCell);
+      counter++;
     }
   }
 };
+const parsePrompt = (prompt: string, param: Param) => {
+  let parsedPrompt = prompt
+    .replace(/\{\{subject\}\}/g, param.subject)
+    .replace(/\{\{content\}\}/g, param.content.join("\n"))
+    .replace(/\{\{additional\}\}/g, param.additional);
+  console.log(parsedPrompt);
+  return parsedPrompt;
+};
 
-call();
+const prompt = fs.readFileSync("prompt.txt", "utf-8");
+const params = readParams("params.json");
+
+call(prompt, params);
