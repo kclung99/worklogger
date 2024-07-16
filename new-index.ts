@@ -1,6 +1,7 @@
 import "dotenv/config";
-import OpenAI from "openai";
 import fs from "fs";
+import OpenAI from "openai";
+import { stringify } from "csv-stringify/sync";
 
 type Param = {
     subjectId: string;
@@ -10,31 +11,64 @@ type Param = {
     steps: string[];
     stages: number;
     headcounts: number;
-    additional?: string[];
+    additional: string[];
 };
 
-const _setup = () => {
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const prompt = fs.readFileSync("new-prompt.txt", "utf-8");
+const subjectIdToContent: Record<string, string[]> = {};
+const openai = new OpenAI();
+
+const main = async () => {
+    try {
+        _initialize();
+        const params = _getParams("new-params.json");
+
+        const chatPromises = params.map(async (param) => {
+            const parsedPrompt = _parsePrompt(prompt, param);
+            const response = await _chat(parsedPrompt);
+            const content = response.choices[0].message.content;
+
+            for (let i = 0; i < param.headcounts; i++) {
+                // TODO: Add proper error handling for content
+                if (subjectIdToContent[param.subjectId]) {
+                    subjectIdToContent[param.subjectId].push(content!);
+                } else {
+                    subjectIdToContent[param.subjectId] = [content!];
+                }
+            }
+        });
+
+        await Promise.all(chatPromises);
+        for (const [k, v] of Object.entries(subjectIdToContent)) {
+            console.log("key:", k, "value:", v);
+        }
+
+        const matrix = _getCsvMatrix(subjectIdToContent);
+        for (const row of matrix) {
+            console.log(row);
+        }
+
+        _write(matrix);
+    } catch (error) {
+        console.error("An error occurred in the main function:", error);
+    }
+};
+
+const _initialize = () => {
     if (!OPENAI_API_KEY) {
         throw new Error("Missing OpenAI API key");
     }
 };
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-const openai = new OpenAI({
-    apiKey: OPENAI_API_KEY,
-});
-
-const readParams = (path: string): Param[] => {
+const _getParams = (path: string): Param[] => {
     const fileContent = fs.readFileSync(path, "utf-8");
     const params: Param[] = JSON.parse(fileContent);
-    console.log(params);
     return params;
 };
 
-const subjectToContent: Record<string, string[]> = {};
-
-const chat = async (subject: string, content: string) => {
+const _chat = async (content: string) => {
+    // TODO: Upgrade function call (completions seems to be outdated)
     const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
@@ -43,38 +77,60 @@ const chat = async (subject: string, content: string) => {
                 content: content,
             },
         ],
+        max_tokens: 2500,
     });
 
-    console.log(JSON.stringify(response, null, 2));
-
-    const result = response.choices[0].message.content;
-    console.log(JSON.stringify(result, null, 2));
-    console.log(JSON.stringify(response, null, 2));
-    if (!subjectToContent[subject]) {
-        subjectToContent[subject] = [];
-    }
-    if (!result) {
+    // Check if reponse is valid
+    if (!response.choices[0].message.content) {
         throw new Error("Missing result");
     }
-    subjectToContent[subject].push(result);
+
     return response;
 };
 
-const write = (path: string, subjectToContent: Record<string, string[]>) => {
+const _getCsvMatrix = (subjectToContent: Record<string, string[]>) => {
     const sortedSubjectToContent = sortObjectByKeys(subjectToContent);
-    let counter = 1;
 
-    for (const contents of Object.values(sortedSubjectToContent)) {
-        for (const audits of contents) {
-            let parsedContent = `"${audits}",`;
-            if (counter % 2 === 0) {
-                parsedContent = `"${audits}"\n`;
-            }
-            fs.appendFileSync(path, parsedContent);
-            counter++;
+    const matrix: string[][] = [];
+    for (const [subjectId, contents] of Object.entries(
+        sortedSubjectToContent
+    )) {
+        const splitContents = contents.map((content) => content.split("@@@"));
+        for (const splitContent of splitContents) {
+            matrix.push([subjectId, ...splitContent]);
         }
     }
+
+    return matrix;
 };
+
+const _write = (matrix: string[][]) => {
+    const csvString = stringify(matrix);
+
+    const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const fileName = `response-${currentDate}.csv`;
+
+    if (fs.existsSync(fileName)) {
+        fs.unlinkSync(fileName);
+    }
+    fs.writeFileSync(fileName, csvString);
+};
+
+// const write = (path: string, subjectToContent: Record<string, string[]>) => {
+//     const sortedSubjectToContent = sortObjectByKeys(subjectToContent);
+//     let counter = 1;
+
+//     for (const contents of Object.values(sortedSubjectToContent)) {
+//         for (const audits of contents) {
+//             let parsedContent = `"${audits}",`;
+//             if (counter % 2 === 0) {
+//                 parsedContent = `"${audits}"\n`;
+//             }
+//             fs.appendFileSync(path, parsedContent);
+//             counter++;
+//         }
+//     }
+// };
 
 function sortObjectByKeys(
     subjectToContent: Record<string, string[]>
@@ -91,25 +147,25 @@ function sortObjectByKeys(
     return sortedObject;
 }
 
-const call = async (prompt: string, params: Param[]) => {
-    const chatPromises: Promise<any>[] = [];
+// const call = async (prompt: string, params: Param[]) => {
+//     const chatPromises: Promise<any>[] = [];
 
-    for (let i = 0; i < params.length; i++) {
-        const headcounts = params[i].headcounts;
-        const subjectId = params[i].subjectId;
+//     for (let i = 0; i < params.length; i++) {
+//         const headcounts = params[i].headcounts;
+//         const subjectId = params[i].subjectId;
 
-        for (let j = 0; j < headcounts; j++) {
-            const parsedPrompt = _parsePrompt(prompt, params[i]);
-            chatPromises.push(chat(subjectId, parsedPrompt));
-        }
-    }
+//         for (let j = 0; j < headcounts; j++) {
+//             const parsedPrompt = _parsePrompt(prompt, params[i]);
+//             chatPromises.push(chat(subjectId, parsedPrompt));
+//         }
+//     }
 
-    await Promise.all(chatPromises);
+//     await Promise.all(chatPromises);
 
-    const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const csvFileName = `response-${currentDate}.csv`;
-    write(csvFileName, subjectToContent);
-};
+//     const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+//     const csvFileName = `response-${currentDate}.csv`;
+//     write(csvFileName, subjectIdToContent);
+// };
 
 const _parsePrompt = (prompt: string, param: Param) => {
     let parsedPrompt = prompt
@@ -127,7 +183,5 @@ const _parsePrompt = (prompt: string, param: Param) => {
     return parsedPrompt;
 };
 
-const prompt = fs.readFileSync("new-prompt.txt", "utf-8");
-const params = readParams("new-params.json");
-
-call(prompt, params);
+// call(prompt, params);
+main();

@@ -13,8 +13,23 @@
             "支援secp256r1橢圓區線加密之簽章驗證。",
             "部署智能合約至區塊鏈上。"
         ],
-        "stages": 4,
-        "headcounts": 2,
+        "stages": 3,
+        "headcounts": 4,
         "additional": ["忽略「截圖兩份」"]
+    },
+    {
+        "subjectId": "A2",
+        "subject": "平台API設計",
+        "time": "113年7-9月",
+        "audits": [
+            "API規格文件一式（包含聲明文件內容定義、addSigner、veriftyClaim 及 query 功能）。"
+        ],
+        "steps": [
+            "設計API的端點（Endpoints），確定資源、請求方法和回應資料格式。",
+            "安全機制規劃，避免重入攻擊，影響系統效能。"
+        ],
+        "stages": 4,
+        "headcounts": 3,
+        "additional": ["用express框架設計API"]
     }
 ]
