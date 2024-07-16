@@ -4,6 +4,7 @@
 	"main": "index.js",
 	"scripts": {
 		"create": "ts-node index.ts",
+		"dev": "ts-node new-index.ts",
 		"param": "ts-node test-get-params.ts",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
