@@ -26,10 +26,11 @@ const main = async () => {
 
         const chatPromises = params.map(async (param) => {
             const parsedPrompt = _parsePrompt(prompt, param);
-            const response = await _chat(parsedPrompt);
-            const content = response.choices[0].message.content;
-
             for (let i = 0; i < param.headcounts; i++) {
+                const response = await _chat(parsedPrompt);
+                const content = response.choices[0].message.content;
+                console.log("content", response);
+
                 // TODO: Add proper error handling for content
                 if (subjectIdToContent[param.subjectId]) {
                     subjectIdToContent[param.subjectId].push(content!);
@@ -70,7 +71,7 @@ const _getParams = (path: string): Param[] => {
 const _chat = async (content: string) => {
     // TODO: Upgrade function call (completions seems to be outdated)
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         messages: [
             {
                 role: "user",
@@ -78,7 +79,6 @@ const _chat = async (content: string) => {
             },
         ],
         max_tokens: 2500,
-        temperature: 1.2,
     });
 
     // Check if reponse is valid

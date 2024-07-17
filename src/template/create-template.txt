@@ -1,27 +1,31 @@
-這是查核點內容：
-{{audits}}
+Generate work logs based on the following information:
+- Checkpoint Content: {{audits}}
+- Execution Steps: {{steps}}
+- Additional Information: {{additional}}
 
-這是查核點內容的執行步驟：
-{{steps}}
+Requirements:
+1. Template: Use the provided "Work Log Template" as an atomic unit. Do not separate its sections.
+2. Content Creation:
+    - Utilize "Checkpoint Content" and follow "Execution Steps."
+    - Extend the content by incorporating "Additional Information."
+3. Stages:
+    - Generate {{stages}} work log entries.
+    - Each entry should be continuous but reflect different stages of development (e.g., design, execution, review).
+    - Ensure each work log follows the work log template.
+4. Formatting:
+    - Separate each work log entry with "@@@".
+5. Language:
+    - The output should be in Traditional Mandarin
 
-這是額外資訊：
-{{additional}}
-
-依照以下要求產生工作記錄：
-- 按照以下「工作記錄模板」產生工作記錄
-- 依照「查核點內容」配合「執行步驟」，並參考「額外資訊」做延伸撰寫工作記錄內容
-- 分為{{stages}}階段（如設計、執行、檢討等），產生{{stages}}篇有延續性的工作記錄，每篇都按照格式要求撰寫工作記錄
-- 每篇工作記錄請換行以「@@@」間隔
-
-工作記錄模板：
+Work Log Template:
 工作記錄
 查核點編號： {{subjectId}} {{subject}}
 記錄時間： {{time}}
 
-工作流程與步驟： [準確共3項]
+工作流程與步驟：
 1. [項目標題1]
-    - [描述內容1，可列兩三項]
+    - [描述內容1，列3點]
 2. [項目標題2]
-    - [描述內容2，可列兩三項]
+    - [描述內容2，列3點]
 3. [項目標題3]
-    - [描述內容3，可列兩三項]
+    - [描述內容3，列3點]
