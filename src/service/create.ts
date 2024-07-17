@@ -29,6 +29,7 @@ const main = async () => {
             for (let i = 0; i < param.headcounts; i++) {
                 const response = await _chat(parsedPrompt);
                 const content = response.choices[0].message.content;
+                // TODO: remove unecessary loggings later
                 console.log("content", response);
 
                 // TODO: Add proper error handling for content
@@ -78,7 +79,7 @@ const _chat = async (content: string) => {
                 content: content,
             },
         ],
-        max_tokens: 2500,
+        max_tokens: 2000,
     });
 
     // Check if reponse is valid
@@ -96,13 +97,28 @@ const _getCsvMatrix = (subjectToContent: Record<string, string[]>) => {
     for (const [subjectId, contents] of Object.entries(
         sortedSubjectToContent
     )) {
-        const splitContents = contents.map((content) => content.split("@@@"));
+        const splitContents = _getSplitContents(contents);
         for (const splitContent of splitContents) {
             matrix.push([subjectId, ...splitContent]);
         }
     }
 
     return matrix;
+};
+
+const _getSplitContents = (contents: string[]) => {
+    const splitContents: string[][] = [];
+    // Parse data (trim -> split -> filter)
+    for (const content of contents) {
+        const trimmedContent = content.trim();
+        const splitContent = trimmedContent.split("@@@");
+        // Basic filtering, filter out empty strings, new lines, and apparent wrong data
+        const filteredContent = splitContent.filter(
+            (c) => c !== "" && c !== "\n" && c.length > 15
+        );
+        splitContents.push(filteredContent);
+    }
+    return splitContents;
 };
 
 const _write = (matrix: string[][]) => {

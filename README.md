@@ -4,12 +4,10 @@ This project is still under construction 🚧
 
 This project is intended to simplify the work logging process.
 
-## Problems
+## Known Issues
 
--   Incorrect stages for given subject (occasional)
--   Repeated content
--   Need precise splitting for the reponse
+## Upcoming Updates
 
-## Incoming Upgrades
-
--   Add cost of execution (from token usage)
+-   Add cost of execution (calculate from token usage and model)
+-   Add experimental persona with each prompt
+-   Improve prompt to achieve more precise outputs
