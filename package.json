@@ -3,11 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "fmt": "npx prettier --write .",
-        "create": "ts-node index.ts",
-        "dev": "ts-node new-index.ts",
-        "param": "ts-node test-get-params.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "param": "ts-node src/service/param.ts",
+        "create": "ts-node src/service/create.ts",
+        "fmt": "prettier --write ."
     },
     "keywords": [],
     "author": "",

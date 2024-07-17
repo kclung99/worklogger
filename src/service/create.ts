@@ -15,14 +15,14 @@ type Param = {
 };
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const prompt = fs.readFileSync("new-prompt.txt", "utf-8");
+const prompt = fs.readFileSync("src/template/create-template.txt", "utf-8");
 const subjectIdToContent: Record<string, string[]> = {};
 const openai = new OpenAI();
 
 const main = async () => {
     try {
         _initialize();
-        const params = _getParams("new-params.json");
+        const params = _getParams("src/param/create-params.json");
 
         const chatPromises = params.map(async (param) => {
             const parsedPrompt = _parsePrompt(prompt, param);
@@ -78,6 +78,7 @@ const _chat = async (content: string) => {
             },
         ],
         max_tokens: 2500,
+        temperature: 1.2,
     });
 
     // Check if reponse is valid
@@ -116,22 +117,6 @@ const _write = (matrix: string[][]) => {
     fs.writeFileSync(fileName, csvString);
 };
 
-// const write = (path: string, subjectToContent: Record<string, string[]>) => {
-//     const sortedSubjectToContent = sortObjectByKeys(subjectToContent);
-//     let counter = 1;
-
-//     for (const contents of Object.values(sortedSubjectToContent)) {
-//         for (const audits of contents) {
-//             let parsedContent = `"${audits}",`;
-//             if (counter % 2 === 0) {
-//                 parsedContent = `"${audits}"\n`;
-//             }
-//             fs.appendFileSync(path, parsedContent);
-//             counter++;
-//         }
-//     }
-// };
-
 function sortObjectByKeys(
     subjectToContent: Record<string, string[]>
 ): Record<string, string[]> {
@@ -146,26 +131,6 @@ function sortObjectByKeys(
 
     return sortedObject;
 }
-
-// const call = async (prompt: string, params: Param[]) => {
-//     const chatPromises: Promise<any>[] = [];
-
-//     for (let i = 0; i < params.length; i++) {
-//         const headcounts = params[i].headcounts;
-//         const subjectId = params[i].subjectId;
-
-//         for (let j = 0; j < headcounts; j++) {
-//             const parsedPrompt = _parsePrompt(prompt, params[i]);
-//             chatPromises.push(chat(subjectId, parsedPrompt));
-//         }
-//     }
-
-//     await Promise.all(chatPromises);
-
-//     const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-//     const csvFileName = `response-${currentDate}.csv`;
-//     write(csvFileName, subjectIdToContent);
-// };
 
 const _parsePrompt = (prompt: string, param: Param) => {
     let parsedPrompt = prompt
@@ -183,5 +148,4 @@ const _parsePrompt = (prompt: string, param: Param) => {
     return parsedPrompt;
 };
 
-// call(prompt, params);
 main();

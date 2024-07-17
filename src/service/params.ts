@@ -78,7 +78,7 @@ const main = async () => {
     // );
     // console.log(JSON.stringify(file, null, 2));
 
-    const prompt = fs.readFileSync("./file-prompt.txt", "utf-8");
+    const prompt = fs.readFileSync("src/template/params-template.txt", "utf-8");
     // const thread = await _createThread(file.id, prompt);
     const thread = await _createThread("file-sfJrLJVLe7IN7nIs5P2r9FaT", prompt);
     console.log(JSON.stringify(thread, null, 2));
