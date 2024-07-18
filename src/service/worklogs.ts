@@ -15,7 +15,6 @@ type Param = {
 };
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const prompt = fs.readFileSync("src/prompt/create-template.txt", "utf-8");
 const subjectIdToContent: Record<string, string[]> = {};
 const openai = new OpenAI();
 
@@ -25,7 +24,8 @@ const generateWorkLogs = async (
 ) => {
     try {
         _initialize();
-        const params = _getParams("src/param/test-params.json");
+        const params = _getParams(`src/param/${paramFileName}`);
+        const prompt = fs.readFileSync(`src/prompt/${promptFileName}`, "utf-8");
 
         const chatPromises = params.map(async (param) => {
             const parsedPrompt = _parsePrompt(prompt, param);
@@ -127,13 +127,22 @@ const _getSplitContents = (contents: string[]) => {
 const _write = (matrix: string[][]) => {
     const csvString = stringify(matrix);
 
-    const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const fileName = `response-${currentDate}.csv`;
+    const currentDateTime = new Date();
+    const datePart = currentDateTime
+        .toISOString()
+        .slice(0, 10)
+        .replace(/-/g, "");
+    const timePart = currentDateTime
+        .toTimeString()
+        .slice(0, 5)
+        .replace(/:/g, "");
+    const fileName = `response-${datePart}-${timePart}.csv`;
 
-    if (fs.existsSync(fileName)) {
-        fs.unlinkSync(fileName);
+    const filePath = `output/${fileName}`;
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
     }
-    fs.writeFileSync(fileName, csvString);
+    fs.writeFileSync(filePath, csvString);
 };
 
 function _sortObjectByKeys(

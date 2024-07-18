@@ -5,7 +5,7 @@
     "scripts": {
         "upload": "ts-node src/index.ts upload",
         "generate-params": "ts-node src/index.ts generate-params",
-        "create": "ts-node src/index.ts create",
+        "generate-work-logs": "ts-node src/index.ts generate-work-logs",
         "fmt": "prettier --write ."
     },
     "keywords": [],

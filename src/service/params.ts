@@ -4,14 +4,14 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-const test = async () => {
-    // Assistant already created, file already uploaded
-    const prompt = fs.readFileSync("src/prompt/params-template.txt", "utf-8");
-    const thread = await _createThread("file-sfJrLJVLe7IN7nIs5P2r9FaT", prompt);
-    const messages = await _run(thread.id, "asst_0G0mnTW3Dbzl7S4XS8p8mhRc");
-    const messageData = _parseMessageData(messages.data.pop()!);
-    _writeToFile("src/param/auto-create-params.json", messageData);
-};
+// const test = async () => {
+//     // Assistant already created, file already uploaded
+//     const prompt = fs.readFileSync("src/prompt/params-template.txt", "utf-8");
+//     const thread = await _createThread("file-sfJrLJVLe7IN7nIs5P2r9FaT", prompt);
+//     const messages = await _run(thread.id, "asst_0G0mnTW3Dbzl7S4XS8p8mhRc");
+//     const messageData = _parseMessageData(messages.data.pop()!);
+//     _writeToFile("src/param/auto-create-params.json", messageData);
+// };
 
 const upload = async (path: string) => {
     const file = await _uploadFile(path);
@@ -30,6 +30,7 @@ const upload = async (path: string) => {
 };
 
 const generateParams = async (promptFileName: string, fileId: string) => {
+    const parsedPromptFileName = promptFileName.replace(/^"|"$/g, ""); // remove quotation marks
     const config = _getConfig();
 
     let assistantId = config["assistant-id"];
@@ -38,6 +39,7 @@ const generateParams = async (promptFileName: string, fileId: string) => {
         return;
     }
 
+    // TODO: remove this (and also the arg, let fileId adn assistantId be bundled in config)
     if (!fileId) {
         fileId = config["file-id"];
         if (!_isValidValue(fileId)) {
@@ -46,7 +48,10 @@ const generateParams = async (promptFileName: string, fileId: string) => {
         }
     }
 
-    const prompt = fs.readFileSync(`src/prompt/${promptFileName}`, "utf-8");
+    const prompt = fs.readFileSync(
+        `src/prompt/${parsedPromptFileName}`,
+        "utf-8"
+    );
     const thread = await _createThread(fileId, prompt);
     const messages = await _run(thread.id, assistantId);
     const messageData = _parseMessageData(messages.data.pop()!);
@@ -156,4 +161,4 @@ const _writeToFile = (filePath: string, messageData: string) => {
     }
 };
 
-export { test, upload, generateParams };
+export { upload, generateParams };

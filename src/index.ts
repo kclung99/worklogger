@@ -2,8 +2,8 @@ import "dotenv/config";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 
-import { test as testParams, upload, generateParams } from "./service/params";
-import { main as create } from "./service/create";
+import { upload, generateParams } from "./service/params";
+import { generateWorkLogs } from "./service/worklogs";
 
 const main = () => {
     yargs(hideBin(process.argv))
@@ -45,19 +45,28 @@ const main = () => {
             }
         )
         .command(
-            "params",
-            "Example of preconfigured pipeline for generating params",
-            () => {},
-            async () => {
-                await testParams();
-            }
-        )
-        .command(
-            "create",
-            "Example of preconfigured pipeline for generating work logs",
-            () => {},
-            async () => {
-                await create();
+            "generate-work-logs [promptFileName] [paramFileName]",
+            "Generate work logs from the prompt and params",
+            (yargs) => {
+                return yargs
+                    .positional("promptFileName", {
+                        describe:
+                            "File name of the prompt to generate work logs",
+                        type: "string",
+                        demandOption: true,
+                    })
+                    .positional("paramFileName", {
+                        describe:
+                            "File name of the params to generate work logs",
+                        type: "string",
+                        demandOption: true,
+                    });
+            },
+            async (argv) => {
+                await generateWorkLogs(
+                    argv.promptFileName as string,
+                    argv.paramFileName as string
+                );
             }
         )
         .demandCommand(1, "You need to specify a command before moving on")

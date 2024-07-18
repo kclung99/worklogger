@@ -1,7 +1,0 @@
-what does the test upload file says, return in JSON array as following: 
-[
-    {
-        "name": [name-of-the-dog],
-        "activity": [dog-activity]
-    }
-]
