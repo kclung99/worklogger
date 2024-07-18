@@ -15,14 +15,17 @@ type Param = {
 };
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const prompt = fs.readFileSync("src/template/create-template.txt", "utf-8");
+const prompt = fs.readFileSync("src/prompt/create-template.txt", "utf-8");
 const subjectIdToContent: Record<string, string[]> = {};
 const openai = new OpenAI();
 
-const main = async () => {
+const generateWorkLogs = async (
+    promptFileName: string,
+    paramFileName: string
+) => {
     try {
         _initialize();
-        const params = _getParams("src/param/create-params.json");
+        const params = _getParams("src/param/test-params.json");
 
         const chatPromises = params.map(async (param) => {
             const parsedPrompt = _parsePrompt(prompt, param);
@@ -164,4 +167,4 @@ const _parsePrompt = (prompt: string, param: Param) => {
     return parsedPrompt;
 };
 
-main();
+export { generateWorkLogs };

@@ -3,8 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "param": "ts-node src/service/params.ts",
-        "create": "ts-node src/service/create.ts",
+        "upload": "ts-node src/index.ts upload",
+        "generate-params": "ts-node src/index.ts generate-params",
+        "create": "ts-node src/index.ts create",
         "fmt": "prettier --write ."
     },
     "keywords": [],
@@ -14,9 +15,11 @@
     "dependencies": {
         "csv-stringify": "^6.5.0",
         "dotenv": "^16.4.5",
-        "openai": "^4.52.5"
+        "openai": "^4.52.5",
+        "yargs": "^17.7.2"
     },
     "devDependencies": {
+        "@types/yargs": "^17.0.32",
         "prettier": "^3.3.3",
         "ts-node": "^10.9.2",
         "tsc": "^2.0.4",
