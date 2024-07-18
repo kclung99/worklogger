@@ -91,7 +91,7 @@ const _chat = async (content: string) => {
 };
 
 const _getCsvMatrix = (subjectToContent: Record<string, string[]>) => {
-    const sortedSubjectToContent = sortObjectByKeys(subjectToContent);
+    const sortedSubjectToContent = _sortObjectByKeys(subjectToContent);
 
     const matrix: string[][] = [];
     for (const [subjectId, contents] of Object.entries(
@@ -133,7 +133,7 @@ const _write = (matrix: string[][]) => {
     fs.writeFileSync(fileName, csvString);
 };
 
-function sortObjectByKeys(
+function _sortObjectByKeys(
     subjectToContent: Record<string, string[]>
 ): Record<string, string[]> {
     // Get the keys of the object and sort them

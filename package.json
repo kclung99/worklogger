@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "param": "ts-node src/service/param.ts",
+        "param": "ts-node src/service/params.ts",
         "create": "ts-node src/service/create.ts",
         "fmt": "prettier --write ."
     },

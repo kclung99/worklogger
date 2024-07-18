@@ -88,7 +88,24 @@ const main = async () => {
     console.log(JSON.stringify(messages, null, 2));
 
     const messageData = _parseMessageData(messages.data.pop()!);
-    console.log(messageData);
+
+    const match = messageData.match(/\[(.*)\]/s); // Get content from the first "[" to the last "]" (valid JSON format)
+
+    if (match) {
+        const jsonData = JSON.parse(match[0]);
+        const jsonContent = JSON.stringify(jsonData, null, 2);
+
+        const filePath = "src/param/auto-create-params.json";
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+        fs.writeFileSync(filePath, jsonContent, "utf8");
+
+        console.log(jsonContent);
+    } else {
+        console.log("Not valid JSON format. No match found");
+        return;
+    }
 };
 
 main();
