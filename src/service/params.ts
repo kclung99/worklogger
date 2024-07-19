@@ -4,15 +4,6 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-// const test = async () => {
-//     // Assistant already created, file already uploaded
-//     const prompt = fs.readFileSync("src/prompt/params-template.txt", "utf-8");
-//     const thread = await _createThread("file-sfJrLJVLe7IN7nIs5P2r9FaT", prompt);
-//     const messages = await _run(thread.id, "asst_0G0mnTW3Dbzl7S4XS8p8mhRc");
-//     const messageData = _parseMessageData(messages.data.pop()!);
-//     _writeToFile("src/param/auto-create-params.json", messageData);
-// };
-
 const upload = async (path: string) => {
     const file = await _uploadFile(path);
     const assistant = await _createAssistant();

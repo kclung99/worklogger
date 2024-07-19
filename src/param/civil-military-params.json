@@ -13,7 +13,7 @@
             "支援secp256r1橢圓區線加密之簽章驗證。",
             "部署智能合約至區塊鏈上。"
         ],
-        "stages": 2,
+        "stages": 3,
         "headcounts": 3,
         "additional": []
     },
@@ -28,8 +28,8 @@
             "設計API的端點（Endpoints），確定資源、請求方法和回應資料格式。",
             "安全機制規劃，避免重入攻擊，影響系統效能。"
         ],
-        "stages": 2,
-        "headcounts": 3,
+        "stages": 4,
+        "headcounts": 2,
         "additional": []
     },
     {
@@ -45,7 +45,7 @@
             "各項 API 之功能測試工具。"
         ],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -58,7 +58,7 @@
         ],
         "steps": ["電路板設計。", "安全通訊介面。", "資訊安全設計觀念。"],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -73,7 +73,7 @@
         ],
         "steps": [],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -85,7 +85,7 @@
         ],
         "steps": [],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -98,7 +98,7 @@
         ],
         "steps": [],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -116,7 +116,7 @@
             "安全測試。"
         ],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -131,7 +131,7 @@
             "協助改善系統資訊安全等級。"
         ],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     },
     {
@@ -150,7 +150,7 @@
             "產品檢驗部門讀取聲明文件及簽章資料，透過本平台進行簽章資料之驗證，確認簽章的合法性。"
         ],
         "stages": 2,
-        "headcounts": 3,
+        "headcounts": 0,
         "additional": []
     }
 ]
