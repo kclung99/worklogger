@@ -1,0 +1,31 @@
+Generate work logs based on the following information:
+- Checkpoint Content: {{audits}}
+- Execution Steps: {{steps}}
+- Additional Information: {{additional}}
+
+Requirements:
+1. Template: Use the provided "Work Log Template" as an atomic unit. Do not separate its sections.
+2. Content Creation:
+    - Utilize "Checkpoint Content" and follow "Execution Steps."
+    - Extend the content by incorporating "Additional Information."
+3. Stages:
+    - Generate {{stages}} work log entries.
+    - Each entry should be continuous but reflect different stages of development (e.g., design, execution, review).
+    - Ensure each work log follows the work log template.
+4. Formatting:
+    - Separate each work log entry with "@@@".
+5. Language:
+    - The output should be in Traditional Mandarin
+
+Work Log Template:
+工作記錄
+查核點編號： {{subjectId}} {{subject}}
+執行時間： {{time}}
+
+工作項目：
+1. [項目標題1]
+    - [描述內容1，列2~3點]
+2. [項目標題2]
+    - [描述內容2，列2~3點]
+3. [項目標題3]
+    - [描述內容3，列2~3點]
